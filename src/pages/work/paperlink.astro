@@ -1,0 +1,100 @@
+---
+import Base from '../../layouts/Base.astro';
+import CaseHero from '../../components/CaseHero.astro';
+
+// Decorative 21×21 pattern for the pairing scene; not a scannable code.
+const qr = Array.from({ length: 21 * 21 }, (_, i) => {
+  const x = i % 21, y = Math.floor(i / 21);
+  const finder = (a: number, b: number) => x >= a && x < a + 7 && y >= b && y < b + 7;
+  if (finder(0, 0) || finder(14, 0) || finder(0, 14)) {
+    const lx = x >= 14 ? x - 14 : x, ly = y >= 14 ? y - 14 : y;
+    return Math.max(Math.abs(lx - 3), Math.abs(ly - 3)) !== 2;
+  }
+  return (x * 7 + y * 13 + x * y) % 5 < 2;
+});
+---
+
+<Base
+  title="Paperlink — Jonas Taigel"
+  description="Paperlink by Jonas Taigel: handwriting and PDF worksheets on the iPad, saved as plain files on your laptop, with AI assistants in the margin."
+>
+  <CaseHero
+    title="Paperlink"
+    lede="A local handwriting workspace connecting your paper, Obsidian and AI"
+    facts={[
+      { label: 'Role', value: 'Solo, design and code' },
+      { label: 'Stack', value: 'Node.js, Apple Pencil, PDF, MCP' },
+      { label: 'Status', value: 'Early prototype' },
+    ]}
+    links={[
+      { label: 'Source', href: 'https://github.com/jonez-x/paperlink' },
+    ]}
+  >
+    <svg slot="art" class="viz" viewBox="0 0 64 44">
+      <rect class="viz-sheet" x="3" y="2" width="38" height="40" rx="3" />
+      <path class="viz-ink" pathLength="1" d="M9 13c4-4 7 4 11-1s7 3 10-1M9 23c5-3 9 3 14-1s5 2 7 0M9 33c3-2 6 2 9 0" />
+      <rect class="viz-note viz-hot" x="40" y="18" width="21" height="13" rx="2" />
+    </svg>
+  </CaseHero>
+
+  <article class="case">
+    <div class="scrolly" id="story" data-scrolly>
+      <div class="stage" aria-hidden="true" data-active="0">
+        <div class="frame">
+          <div class="paper-scene">
+            <div class="tablet">
+              <div class="sheet">
+                <p class="sheet-head">Analysis, Blatt 07</p>
+                <p class="sheet-task">3. Berechne das Integral</p>
+                <p class="hand hand-1">∫ x² dx = x³⁄3 + C</p>
+                <p class="hand hand-2">→ F(2) − F(0) = 8⁄3</p>
+                <svg class="marks" viewBox="0 0 300 120"><path class="mark-circle" d="M190 64c30-10 70-6 74 14s-46 30-76 20-22-28 6-36" pathLength="1" /><path class="mark-under" d="M20 108c60-6 140-8 240-4" pathLength="1" /></svg>
+                <div class="margin-note"><span>Claude</span>F(2) − F(0) is right. The + C cancels out here, so you can drop it</div>
+              </div>
+            </div>
+
+            <div class="link-line"><span class="packet"></span><span class="lan">LAN</span></div>
+
+            <div class="laptop">
+              <div class="qr">{qr.map((on) => <i class:list={{ on }}></i>)}</div>
+              <ul class="tree">
+                <li>Vault/</li>
+                <li class="d1">Uni/</li>
+                <li class="d2">Analysis.md</li>
+                <li class="d2 new">Blatt-07.paperlink</li>
+              </ul>
+              <p class="cmd">$ paper mcp</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="steps">
+        <section class="step">
+          <h2>Write on the iPad, save on your laptop</h2>
+          <p>
+            Run <code>paper</code> on your computer, scan a QR code with the iPad and write with Apple Pencil:
+            pressure-sensitive pen, highlighter, shapes, lasso, text. Open a PDF worksheet and write right on top of it.
+          </p>
+        </section>
+        <section class="step">
+          <h2>Every canvas is a plain file</h2>
+          <p>
+            There's no sync service in between. The iPad talks to your laptop over the local network, and each canvas is
+            a <code>.paperlink</code> file wherever you put it, for example next to your notes in an Obsidian vault.
+            Export PDF gives you the worksheet with your handwriting, ready to hand in.
+          </p>
+        </section>
+        <section class="step">
+          <h2>Assistants write in the margin</h2>
+          <p>
+            <code>paper mcp</code> lets Claude and other assistants read a page and leave notes next to your writing.
+            <code>paper setup</code> finds Claude Desktop, Claude Code, Codex and Cursor and connects them for you.
+          </p>
+        </section>
+      </div>
+    </div>
+
+    <a class="next" href="/work/vrag"><span class="next-label"><span>[</span>Next<span>]</span></span><span class="next-name">vrag →</span></a>
+  </article>
+</Base>

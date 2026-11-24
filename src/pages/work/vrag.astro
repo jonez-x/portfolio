@@ -1,0 +1,122 @@
+---
+import Base from '../../layouts/Base.astro';
+import CaseHero from '../../components/CaseHero.astro';
+
+const mrr = [
+  { label: 'Baseline', sub: 'BM25', value: 0.742 },
+  { label: 'Run 01', sub: 'BM25 + stemming', value: 0.883 },
+  { label: 'Run 02', sub: 'BM25, tuned', value: 0.921 },
+  { label: 'Run 02', sub: 'Hybrid + graph', value: 0.988 },
+];
+---
+
+<Base
+  title="vrag — Jonas Taigel"
+  description="vrag is local-first retrieval for Obsidian vaults by Jonas Taigel: a terminal UI, a CLI and an MCP server over one measured search pipeline."
+>
+  <CaseHero
+    title="vrag"
+    lede="Local-first retrieval for Obsidian vaults. No cloud, no API keys, your notes never leave your machine"
+    facts={[
+      { label: 'Role', value: 'Solo, design and code' },
+      { label: 'Stack', value: 'Python, BM25, Ollama bge-m3, sqlite-vec, MCP' },
+    ]}
+    links={[
+      { label: 'Source', href: 'https://github.com/jonez-x/vrag' },
+      { label: 'PyPI', href: 'https://pypi.org/project/vrag-obsidian/' },
+    ]}
+  >
+    <svg slot="art" class="viz" viewBox="0 0 64 44">
+      <rect class="viz-bar viz-hot" x="0" y="4" width="58" height="8" rx="2" style="--d:0ms" />
+      <rect class="viz-bar" x="0" y="18" width="42" height="8" rx="2" style="--d:120ms" />
+      <rect class="viz-bar" x="0" y="32" width="28" height="8" rx="2" style="--d:240ms" />
+    </svg>
+  </CaseHero>
+
+  <article class="case">
+    <div class="scrolly" id="story" data-scrolly>
+      <div class="stage" aria-hidden="true" data-active="0">
+        <div class="frame">
+          <div class="scene" data-scene="0">
+            <div class="term term-sm">
+              <div class="term-bar"><i></i><i></i><i></i><span>~/Notes</span></div>
+              <div class="term-body">
+                <p style="--i:0"><span class="prompt">$</span> vrag search "wie verhindere ich overfitting"</p>
+                <p style="--i:1" class="dim">42 notes, bm25, 0.8 ms</p>
+                <p style="--i:2"><span class="n">1</span>Uni/ML/Overfitting.md <span class="dim">› Gegenmaßnahmen</span></p>
+                <p style="--i:3"><span class="n">2</span>Uni/ML/Regularisierung.md <span class="dim">› L2</span></p>
+                <p style="--i:4"><span class="n">3</span>Uni/ML/Kreuzvalidierung.md <span class="dim">› k-fold</span></p>
+                <p style="--i:5" class="dim">why #1: bm25 0.71, dense 0.88, graph 0.05</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="scene" data-scene="1">
+            <ol class="pipe">
+              <li style="--i:0"><span>Notes</span><span class="muted">Chunks by heading</span></li>
+              <li style="--i:1" class="split">
+                <span>BM25<small>Stopwords, compounds, stemming</small></span>
+                <span class="opt">Dense<small>bge-m3, sqlite-vec</small></span>
+              </li>
+              <li style="--i:2"><span>Weighted RRF</span><span class="muted">Note level</span></li>
+              <li style="--i:3" class="opt"><span>Wikilink boost</span><span class="muted">Optional</span></li>
+              <li style="--i:4" class="opt"><span>Cross-encoder rerank</span><span class="muted">Optional</span></li>
+              <li style="--i:5" class="out"><span>Hits with per-stage scores</span></li>
+            </ol>
+          </div>
+
+          <div class="scene" data-scene="2">
+            <figure class="chart">
+              <figcaption>MRR@10 on the dev split</figcaption>
+              {mrr.map((m, i) => (
+                <div class="bar" style={`--v:${m.value}; --i:${i}`}>
+                  <span class="bar-label">{m.label}<small>{m.sub}</small></span>
+                  <span class="bar-track"><span class="bar-fill"></span></span>
+                  <span class="bar-value">{m.value.toFixed(3)}</span>
+                </div>
+              ))}
+              <p class="chart-note">40 queries on a small sample vault, held-out split not run yet</p>
+            </figure>
+          </div>
+        </div>
+      </div>
+
+      <div class="steps">
+        <section class="step">
+          <h2>Ask your vault, not the cloud</h2>
+          <p>
+            vrag searches an Obsidian vault on your own machine. It's one engine with three surfaces: a terminal UI for
+            people, a CLI with <code>--json</code> for scripts, and a read-only MCP server so Claude Code or Cursor can
+            look things up in your notes.
+          </p>
+        </section>
+        <section class="step">
+          <h2>Every stage is a switch</h2>
+          <p>
+            Notes are chunked by heading and scored with BM25, tuned for German: stopwords, compound splitting,
+            stemming, acronyms. Dense embeddings, a wikilink boost and a reranker are optional, so the defaults need
+            nothing but Python. Each hit carries its score per stage, so you can see why it ranked where it did.
+          </p>
+        </section>
+        <section class="step">
+          <h2>Measured, not guessed</h2>
+          <p>
+            Every change is scored against an eval set, and the tuning runs as an agent loop: change one thing, run
+            <code>vrag eval</code>, keep it or revert it. BM25 alone went from 0.742 to 0.921 MRR@10, the full hybrid
+            pipeline reaches 0.988. BM25 answers in under a millisecond, hybrid in about 23&nbsp;ms.
+          </p>
+          <p class="aside">
+            Those are 40 dev queries on a small vault the loop was tuned on. The held-out split hasn't been checked yet.
+          </p>
+        </section>
+      </div>
+    </div>
+
+    <figure class="proof">
+      <img src="/media/vrag-demo.gif" alt="vrag terminal UI: live search with a per-stage score breakdown, plus eval, settings and vault tabs" width="1200" height="720" loading="lazy" />
+      <figcaption>The real terminal UI, recorded from the repo</figcaption>
+    </figure>
+
+    <a class="next" href="/work/paperlink"><span class="next-label"><span>[</span>Next<span>]</span></span><span class="next-name">Paperlink →</span></a>
+  </article>
+</Base>

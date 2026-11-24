@@ -1,0 +1,222 @@
+---
+import Base from '../layouts/Base.astro';
+import Photo from '../components/Photo.astro';
+
+const cv = [
+  {
+    title: 'Experience',
+    items: [{ place: 'Südweststrom, Tübingen', what: 'Working student', when: 'Now' }],
+  },
+  {
+    title: 'Education',
+    items: [
+      { place: 'University of Tübingen', what: 'M.Sc. Media Informatics', when: 'Now' },
+      { place: 'Reutlingen University', what: 'B.Sc. Media and Communication Informatics', when: '2025' },
+    ],
+  },
+];
+
+// Brand marks from Simple Icons (CC0), 24×24.
+const icons = {
+  github:
+    'M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12',
+  linkedin:
+    'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z',
+  discord:
+    'M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z',
+};
+
+// Fanned out on hover. Discord has no profile URL without the numeric user ID, so its card copies the username.
+const contacts = [
+  { kind: 'LinkedIn', icon: icons.linkedin, handle: 'Jonas Taigel', href: 'https://www.linkedin.com/in/jonas-taigel-4359942b2/', tone: 'stone' },
+  { kind: 'GitHub', icon: icons.github, handle: 'jonez-x', href: 'https://github.com/jonez-x', tone: 'ink' },
+  { kind: 'Discord', icon: icons.discord, handle: 'jonez_x', copy: 'jonez_x', tone: 'hot' },
+];
+---
+
+<Base
+  title="Jonas Taigel — UI/UX-minded toolmaker"
+  description="Jonas Taigel builds free tools that get more out of the AI subscription you already pay for, and designs them to be easy to use."
+>
+  <section class="hero" aria-label="Intro">
+    <div class="stage-grain" aria-hidden="true"></div>
+    <svg class="stage-lines" viewBox="0 0 1200 800" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M-20 210 L330 -20 M-20 260 L410 -20" class="ln-cool" />
+      <path d="M980 -20 L1220 250 M1040 -20 L1220 180" class="ln-hot" />
+    </svg>
+
+    <div class="stage-inner">
+      <span class="stage-glow" aria-hidden="true"></span>
+
+      <p class="big big-top" aria-hidden="true">UI/UX</p>
+
+      <div class="stage-photo">
+        <Photo src="portrait.jpg" alt="Portrait of Jonas Taigel" />
+        <svg class="signature" viewBox="0 0 360 160" aria-hidden="true">
+          <g transform="skewX(-14) translate(30 0)">
+            <path
+              pathLength="1"
+              d="M46 50C66 30 122 20 132 32C118 66 112 98 104 120C96 144 64 150 56 136C48 122 74 110 100 112C116 113 124 98 136 90C148 82 160 88 156 100C152 112 134 116 132 104C130 94 142 84 156 88C162 90 166 92 170 88C172 98 170 106 168 113C174 96 184 84 192 87C200 90 194 104 198 112C202 118 212 110 218 100C224 90 232 84 242 88C230 80 212 96 218 108C224 118 238 106 244 90C242 102 240 110 246 113C252 115 260 104 266 94C270 88 276 84 282 86C274 94 292 100 286 110C280 120 262 118 258 110M70 136C160 128 260 126 348 112"
+            />
+          </g>
+        </svg>
+      </div>
+
+      <p class="stage-mission">
+        I build free tools that get a lot more out of the $20 AI subscription you already pay for.
+      </p>
+
+      <dl class="meta">
+        <div><dt>Based in</dt><dd>Engstingen, DE</dd></div>
+        <div><dt>Studying</dt><dd>M.Sc. Media Informatics</dd></div>
+        <div><dt>Working at</dt><dd>Südweststrom</dd></div>
+      </dl>
+      <span class="crosshair" aria-hidden="true"></span>
+
+      <p class="big big-bottom" aria-hidden="true">Toolmaker</p>
+
+      <nav class="stage-bar" aria-label="Intro links">
+        <a href="#contact"><span>[</span>Say hi<span>]</span></a>
+        <a href="#work"><span>[</span>Work ↓<span>]</span></a>
+      </nav>
+    </div>
+  </section>
+
+  <div class="flow" data-flow>
+    <span class="flow-anchor" id="about"></span>
+    <span class="flow-anchor" id="work"></span>
+    <span class="flow-anchor" id="contact"></span>
+
+    <div class="flow-sticky">
+      <svg class="thread" viewBox="0 0 1000 600" aria-hidden="true">
+        <path
+          class="thread-path"
+          d="M720 0C720 110 940 70 900 190C870 290 720 300 770 220C820 140 990 250 920 360C860 450 700 450 740 390C780 330 960 430 900 520C850 600 600 560 420 585C300 600 160 590 60 600"
+        />
+      </svg>
+      <span class="thread-tip" aria-hidden="true"></span>
+
+      <section class="act" aria-labelledby="about-title" data-act>
+        <div class="act-inner">
+          <h1 id="about-title" class="about-line">
+            Hi, I'm <span class="face" aria-hidden="true"><span>JT</span><Photo src="portrait.jpg" alt="" /></span> Jonas Taigel.
+            <span class="soft">I build</span> free AI tools <span class="soft">and I</span> <span class="hot">love UI/UX.</span>
+          </h1>
+          <div class="about-lead-row">
+            <p class="about-lead">
+              The part I enjoy most is the interface. A model can be brilliant and still useless if nobody knows what to
+              do with it, so I look for the one obvious first step and answers you understand at a glance.
+            </p>
+            <!-- raw output (scattered) → interface (ranked) -->
+            <svg class="viz viz-about" viewBox="0 0 240 90" aria-hidden="true">
+              <g class="viz-dots">
+                <circle cx="8" cy="20" r="2.5" /><circle cx="30" cy="12" r="2.5" /><circle cx="52" cy="28" r="2.5" />
+                <circle cx="18" cy="44" r="2.5" /><circle cx="44" cy="50" r="2.5" /><circle cx="66" cy="40" r="2.5" />
+                <circle cx="10" cy="70" r="2.5" /><circle cx="36" cy="78" r="2.5" /><circle cx="60" cy="66" r="2.5" />
+              </g>
+              <path class="viz-arrow" d="M90 45h38m-8-6 8 6-8 6" />
+              <rect class="viz-bar viz-hot" x="150" y="18" width="84" height="12" rx="3" style="--d:0ms" />
+              <rect class="viz-bar" x="150" y="39" width="62" height="12" rx="3" style="--d:120ms" />
+              <rect class="viz-bar" x="150" y="60" width="44" height="12" rx="3" style="--d:240ms" />
+            </svg>
+          </div>
+          <div class="cv">
+            {cv.map((group) => (
+              <div class="cv-group">
+                <h2>{group.title}</h2>
+                <ol>
+                  {group.items.map((e) => (
+                    <li>
+                      <span class="cv-place">{e.place}</span>
+                      <span class="cv-what">{e.what}</span>
+                      <span class="cv-when">{e.when}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section class="act" aria-labelledby="work-title" data-act>
+        <div class="act-inner">
+          <h2 id="work-title" class="section-title">Work</h2>
+          <ul class="work-rows">
+            <li>
+              <a href="/work/vrag">
+                <svg class="viz wr-viz" viewBox="0 0 64 44" aria-hidden="true">
+                  <rect class="viz-bar viz-hot" x="0" y="4" width="58" height="8" rx="2" style="--d:0ms" />
+                  <rect class="viz-bar" x="0" y="18" width="42" height="8" rx="2" style="--d:90ms" />
+                  <rect class="viz-bar" x="0" y="32" width="28" height="8" rx="2" style="--d:180ms" />
+                </svg>
+                <span class="wr-name">vrag</span>
+                <span class="wr-line">Search your Obsidian notes by meaning and see why each result ranked first</span>
+                <span class="wr-arrow" aria-hidden="true">→</span>
+              </a>
+            </li>
+            <li>
+              <a href="/work/paperlink">
+                <svg class="viz wr-viz" viewBox="0 0 64 44" aria-hidden="true">
+                  <rect class="viz-sheet" x="3" y="2" width="38" height="40" rx="3" />
+                  <path class="viz-ink" pathLength="1" d="M9 13c4-4 7 4 11-1s7 3 10-1M9 23c5-3 9 3 14-1s5 2 7 0M9 33c3-2 6 2 9 0" />
+                  <rect class="viz-note viz-hot" x="40" y="18" width="21" height="13" rx="2" />
+                </svg>
+                <span class="wr-name">Paperlink</span>
+                <span class="wr-line">Write on worksheets with Apple Pencil and get plain files on your laptop</span>
+                <span class="wr-arrow" aria-hidden="true">→</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="act" aria-labelledby="contact-title" data-act>
+        <div class="act-inner">
+          <h2 id="contact-title" class="section-title">Want to talk about AI tools or interfaces?</h2>
+          <ul class="fan">
+            {contacts.map((c, i) => (
+              <li style={`--i:${i - 1}`}>
+                {c.copy ? (
+                  <button type="button" class:list={['fan-card', `fan-${c.tone}`]} data-copy={c.copy} aria-label={`Copy ${c.kind} username ${c.copy}`}>
+                    <svg class="fan-icon" viewBox="0 0 24 24" aria-hidden="true"><path d={c.icon} /></svg>
+                    <span class="fan-go" aria-hidden="true">⧉</span>
+                    <svg class="fan-mark" viewBox="0 0 24 24" aria-hidden="true"><path d={c.icon} /></svg>
+                    <span class="fan-kind">{c.kind}</span>
+                    <span class="fan-handle" aria-live="polite">{c.handle}</span>
+                  </button>
+                ) : (
+                  <a class:list={['fan-card', `fan-${c.tone}`]} href={c.href}>
+                    <svg class="fan-icon" viewBox="0 0 24 24" aria-hidden="true"><path d={c.icon} /></svg>
+                    <span class="fan-go" aria-hidden="true">↗</span>
+                    <svg class="fan-mark" viewBox="0 0 24 24" aria-hidden="true"><path d={c.icon} /></svg>
+                    <span class="fan-kind">{c.kind}</span>
+                    <span class="fan-handle">{c.handle}</span>
+                  </a>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    </div>
+  </div>
+</Base>
+
+<script>
+  import '../scripts/flow';
+
+  // Discord card: copy the username, say so for a moment.
+  for (const card of document.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
+    const handle = card.querySelector<HTMLElement>('.fan-handle')!;
+    card.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(card.dataset.copy!);
+      } catch {
+        return; // clipboard blocked: the username stays visible on the card
+      }
+      handle.textContent = 'Copied';
+      setTimeout(() => (handle.textContent = card.dataset.copy!), 1600);
+    });
+  }
+</script>

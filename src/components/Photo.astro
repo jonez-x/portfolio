@@ -1,0 +1,19 @@
+---
+// An image from public/media. Until the file exists it renders a labelled placeholder in dev, nothing in builds.
+import { existsSync } from 'node:fs';
+
+interface Props {
+  src: string;
+  alt: string;
+  class?: string;
+}
+
+const { src, alt, class: className } = Astro.props;
+const exists = existsSync(`public/media/${src}`);
+---
+
+{exists ? (
+  <img class:list={['photo', className]} src={`/media/${src}`} alt={alt} loading="lazy" decoding="async" />
+) : import.meta.env.DEV && (
+  <div class:list={['photo', 'photo-missing', className]}>public/media/{src}</div>
+)}

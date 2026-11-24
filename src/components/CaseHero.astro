@@ -1,0 +1,38 @@
+---
+// The dark stage at the top of a case study, same language as the home hero: giant frosted title,
+// mono facts, bracket links. The `art` slot takes the project's small diagram, drawn large.
+
+interface Props {
+  title: string;
+  lede: string;
+  facts: { label: string; value: string }[];
+  links: { label: string; href: string }[];
+}
+
+const { title, lede, facts, links } = Astro.props;
+---
+
+<section class="hero case-hero" aria-labelledby="case-title">
+  <div class="stage-grain" aria-hidden="true"></div>
+  <svg class="stage-lines" viewBox="0 0 1200 800" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M-20 210 L330 -20 M-20 260 L410 -20" class="ln-cool" />
+    <path d="M980 -20 L1220 250 M1040 -20 L1220 180" class="ln-hot" />
+  </svg>
+
+  <div class="case-hero-inner">
+    <span class="case-glow" aria-hidden="true"></span>
+    <a class="bracket case-back" href="/#work"><span>[</span>← All work<span>]</span></a>
+    <div class="case-art" aria-hidden="true"><slot name="art" /></div>
+    <h1 id="case-title" class="big case-title">{title}</h1>
+    <p class="case-lede">{lede}</p>
+    <dl class="meta case-meta">
+      {facts.map((f) => <div><dt>{f.label}</dt><dd>{f.value}</dd></div>)}
+    </dl>
+    <nav class="stage-bar" aria-label="Project links">
+      <span class="case-links">
+        {links.map((l) => <a href={l.href}><span>[</span>{l.label}<span>]</span></a>)}
+      </span>
+      <a href="#story"><span>[</span>Read ↓<span>]</span></a>
+    </nav>
+  </div>
+</section>

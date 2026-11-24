@@ -1,0 +1,68 @@
+---
+import '@fontsource-variable/fraunces/full.css';
+import '@fontsource-variable/fraunces/full-italic.css';
+import '@fontsource-variable/instrument-sans/wdth.css';
+import '@fontsource-variable/jetbrains-mono';
+import '../styles/global.css';
+import Logo from '../components/Logo.astro';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Jonas Taigel',
+  url: Astro.site?.toString(),
+  sameAs: ['https://github.com/jonez-x'],
+  worksFor: { '@type': 'Organization', name: 'Südweststrom' },
+  alumniOf: { '@type': 'CollegeOrUniversity', name: 'Reutlingen University' },
+  knowsAbout: ['AI tools', 'User experience design', 'Local language models'],
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f7f5f2" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f0d0c" media="(prefers-color-scheme: dark)" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script type="application/ld+json" set:html={JSON.stringify(person)} />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="top">
+      <a class="wordmark" href="/"><Logo />Jonas Taigel</a>
+      <nav aria-label="Primary">
+        <a href="/#about">About</a>
+        <a href="/#work">Work</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </header>
+    <main id="main">
+      <slot />
+    </main>
+    <footer class="foot">
+      <span>© 2026 Jonas Taigel</span>
+    </footer>
+    <script>
+      import '../scripts/scrolly';
+      import '../scripts/header';
+    </script>
+  </body>
+</html>
