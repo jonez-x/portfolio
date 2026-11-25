@@ -252,7 +252,7 @@ html:has(.hero) .top:not(.is-past) nav a:hover { color: #ff7a2f; }
   display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 20px 0 28px;
   border-top: 1px solid var(--s-line); font: 12px/16px var(--mono); text-transform: uppercase; letter-spacing: 0.06em;
 }
-.stage-bar a { text-decoration: none; color: var(--s-text); }
+.stage-bar a { text-decoration: none; color: var(--s-text); white-space: nowrap; }
 .stage-bar a:hover { color: var(--s-hot); }
 .stage-bar a span { margin: 0 8px; color: var(--s-hot); }
 
@@ -579,10 +579,11 @@ html:not(.js) .steps::after { transform: none; }
   .wr-arrow { grid-column: 2; grid-row: 1; }
 
   .case-hero-inner { min-height: 0; padding: 96px 20px 0; grid-template-columns: 1fr; grid-template-rows: none; }
-  .case-hero-inner > * { grid-column: 1; grid-row: auto; }
-  .case-art { width: 140px; margin-top: 24px; }
+  .case-hero .case-hero-inner > * { grid-column: 1; grid-row: auto; }
+  .case-art { width: 112px; margin: 40px 0 8px; }
+  .case-lede { margin: 20px 0 28px; font-size: 17px; line-height: 27px; }
   .case-title { font-size: 21vw; }
-  .case-hero .case-meta { justify-self: stretch; margin: 0 0 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; text-align: left; }
+  .case-hero .case-hero-inner .case-meta { justify-self: stretch; margin: 0 0 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; text-align: left; }
   .steps { padding-left: 28px; }
   .steps::before, .steps::after { left: 4px; top: 36px; }
   .step::before { left: -28px; top: 36px; }
@@ -638,6 +639,29 @@ html:not(.js) .steps::after { transform: none; }
 .lost-title { grid-row: 1; align-self: end; font-size: clamp(140px, 30vw, 440px); }
 .lost-line { grid-row: 2; margin: 28px 0 40px; max-width: 34ch; color: rgb(245 241 236 / 0.82); font-size: 19px; line-height: 30px; }
 .lost .stage-bar { grid-column: 1 / -1; grid-row: 3; }
+
+/* stacked flow on phones (scripts/flow.ts): the line meanders down the right edge as you scroll, pieces settle in */
+@media (max-width: 900px) and (prefers-reduced-motion: no-preference) {
+  .js .thread { display: block; position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+  .js .thread-tip {
+    display: block; position: absolute; z-index: 0; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; background: var(--accent);
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 18%, transparent), 0 0 60px 30px color-mix(in srgb, var(--accent) 14%, transparent);
+    transition: opacity 200ms var(--ease);
+  }
+  .js .thread-tip.is-hidden { opacity: 0; }
+  .js .act { position: relative; z-index: 1; }
+
+  .js .rv {
+    opacity: 0; transform: translateY(32px);
+    transition: opacity 700ms var(--ease), transform 900ms var(--ease); transition-delay: calc(var(--rv-i, 0) * 110ms);
+  }
+  .js .work-rows .rv { transform: translateX(48px); }
+  /* the contact cards are dealt in: each comes from off to the side, tilted, and lands straight */
+  .js .fan .rv { transform: translate(calc(var(--i) * 40px + 20px), 120px) rotate(calc(var(--i) * 6deg + 8deg)); transition-duration: 700ms, 1000ms; transition-delay: calc(var(--rv-i, 0) * 160ms); }
+  .js .rv.is-in { opacity: 1; transform: none; }
+  .js .about-lead-row:not(.is-in) .viz-bar { transform: scaleX(0); }
+  .js .about-lead-row .viz-bar { transition-delay: calc(400ms + var(--d, 0ms)); }
+}
 
 @media (max-width: 900px) {
   .lost-inner { padding: 96px 20px 0; }

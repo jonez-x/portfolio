@@ -1,12 +1,15 @@
 // The flow under the hero: a pinned screen where scrolling only draws the line,
 // while About, Work and Contact fade in and out in place, one after the other.
-// CSS reads --v (0–1, how visible an act is); narrow screens and reduced motion get plain stacked sections.
+// CSS reads --v (0–1, how visible an act is). Narrow screens get the sections stacked instead: the line meanders
+// down beside them and draws as you scroll, and each piece settles in as it arrives (.rv / .is-in).
+// Reduced motion gets plain stacked sections either way.
 import { lenis, ease } from './smooth';
 
 const flow = document.querySelector<HTMLElement>('[data-flow]');
 
 if (flow) {
   const pinned = matchMedia('(min-width: 901px) and (prefers-reduced-motion: no-preference)');
+  const stacked = matchMedia('(max-width: 900px) and (prefers-reduced-motion: no-preference)');
   const sticky = flow.querySelector<HTMLElement>('.flow-sticky')!;
   const svg = flow.querySelector<SVGSVGElement>('.thread')!;
   const path = flow.querySelector<SVGPathElement>('.thread-path')!;
@@ -21,11 +24,30 @@ if (flow) {
   const shape = path.getAttribute('d')!;
   let total = 0;
 
+  // Stacked: a line that swings between two lanes along the right edge, every segment heading down,
+  // then sweeps left under the contact cards.
+  function meander(W: number, H: number) {
+    const lanes = [W - 8, W - 30];
+    const step = 260;
+    let y = 0;
+    let lane = 0;
+    let d = `M${lanes[0]} 0`;
+    while (y + step < H - 160) {
+      const ny = y + step;
+      lane = 1 - lane;
+      d += `C${lanes[1 - lane]} ${y + step / 2} ${lanes[lane]} ${ny - step / 2} ${lanes[lane]} ${ny}`;
+      y = ny;
+    }
+    return d + `C${lanes[lane]} ${y + 120} ${W * 0.7} ${H - 60} 24 ${H - 24}`;
+  }
+
   function fit() {
     const W = sticky.clientWidth;
     const H = sticky.clientHeight;
     let i = 0;
-    const d = shape.replace(/-?\d+(\.\d+)?/g, (n) => String((Number(n) * (i++ % 2 ? H / 600 : W / 1000)).toFixed(1)));
+    const d = stacked.matches
+      ? meander(W, H)
+      : shape.replace(/-?\d+(\.\d+)?/g, (n) => String((Number(n) * (i++ % 2 ? H / 600 : W / 1000)).toFixed(1)));
     svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
     path.setAttribute('d', d);
     total = path.getTotalLength();
@@ -35,7 +57,31 @@ if (flow) {
   const clamp = (v: number) => Math.min(1, Math.max(0, v));
   const range = () => flow.offsetHeight - sticky.offsetHeight;
 
+  // Stacked: drawn down to 70% of the viewport height. The path only ever heads down, so the length
+  // at a given height can be found by bisection.
+  function updateStacked() {
+    const r = sticky.getBoundingClientRect();
+    const y = innerHeight * 0.7 - r.top;
+    let lo = 0;
+    let hi = total;
+    for (let n = 0; n < 16; n++) {
+      const mid = (lo + hi) / 2;
+      if (path.getPointAtLength(mid).y < y) lo = mid;
+      else hi = mid;
+    }
+    const drawn = y <= 0 ? 0 : lo;
+    path.style.strokeDashoffset = String(total - drawn);
+    const at = path.getPointAtLength(drawn);
+    tip.style.left = `${at.x}px`;
+    tip.style.top = `${at.y}px`;
+    tip.classList.toggle('is-hidden', drawn <= 0 || drawn >= total - 1);
+  }
+
   function update() {
+    if (stacked.matches) {
+      updateStacked();
+      return;
+    }
     if (!pinned.matches) {
       acts.forEach((act) => act.style.removeProperty('--v'));
       return;
@@ -138,7 +184,36 @@ if (flow) {
     },
     { passive: true },
   );
-  addEventListener('resize', relayout);
+  // Stacked: headings, rows and cards settle in one after another as they scroll into view.
+  if (stacked.matches) {
+    const pieces = acts.flatMap((act) => [
+      ...act.querySelectorAll<HTMLElement>('.section-title, .about-line, .about-lead-row, .cv-group, .work-rows li, .fan li'),
+    ]);
+    pieces.forEach((el) => {
+      el.classList.add('rv');
+      const siblings = [...el.parentElement!.children].filter((c) => c.matches(el.tagName));
+      el.style.setProperty('--rv-i', String(siblings.indexOf(el)));
+    });
+    const seen = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          e.target.classList.add('is-in');
+          seen.unobserve(e.target);
+        }),
+      { rootMargin: '0px 0px -12% 0px' },
+    );
+    pieces.forEach((el) => seen.observe(el));
+  }
+
+  // A resize that only changes the height (a phone's address bar sliding away) doesn't move anything.
+  let lastW = innerWidth;
+  addEventListener('resize', () => {
+    if (stacked.matches && innerWidth === lastW) return update();
+    lastW = innerWidth;
+    relayout();
+  });
   pinned.addEventListener('change', relayout);
+  stacked.addEventListener('change', relayout);
   relayout();
 }
