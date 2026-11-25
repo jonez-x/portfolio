@@ -443,6 +443,7 @@ html:not(.js) .steps::after { transform: none; }
 .step.is-reached::before, html:not(.js) .step::before { background: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 20%, transparent); }
 .step { min-height: 85svh; padding-top: 160px; max-width: 28rem; display: grid; gap: 16px; align-content: start; color: var(--text-2); opacity: 0.35; transition: opacity 400ms var(--ease); }
 .step:first-child { padding-top: 96px; }
+.stage-inline { display: none; }
 .step h2 { font-size: 32px; line-height: 40px; letter-spacing: -0.02em; color: var(--text); }
 .js .step.is-active, html:not(.js) .step { opacity: 1; }
 .aside { font-size: 15px; line-height: 24px; color: var(--muted); border-left: 2px solid var(--line-strong); padding-left: 16px; }
@@ -589,8 +590,10 @@ html:not(.js) .steps::after { transform: none; }
   .step::before { left: -28px; top: 36px; }
   .scrolly { grid-template-columns: 1fr; gap: 0; }
   .stage { grid-column: 1; top: 0; height: 48svh; z-index: 2; background: var(--bg); padding: 8px 0 16px; }
+  .js .scrolly > .stage { display: none; }
+  .js .stage-inline { display: block; grid-area: auto; position: static; height: auto; max-height: none; padding: 0; margin: 4px 0 8px; background: none; }
   .steps { grid-column: 1; grid-row: 2; }
-  .step, .step:first-child { min-height: 70svh; padding-top: 24px; }
+  .step, .step:first-child { min-height: 0; padding: 24px 0 48px; opacity: 1; }
   .step h2 { font-size: 28px; line-height: 36px; }
   .frame { padding: 16px; border-radius: 16px; }
   .term-sm .term-body p:nth-child(6) { display: none; }
