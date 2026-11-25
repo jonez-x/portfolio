@@ -21,4 +21,8 @@ on the stage, and `--t` on `.steps` for the reading line. `prefers-reduced-motio
 
 **Header.** `src/scripts/header.ts` keeps the floating header light while it is over the dark hero.
 
+**Scrolling and cursor.** `src/scripts/smooth.ts` smooths wheel scrolling with Lenis and glides same-page anchor links; the home flow settles through it too. `src/scripts/cursor.ts` draws the custom cursor (an orange square plus corner brackets that lock onto links), for mouse and trackpad only. Both stay off with reduced motion.
+
+**Sharing and hosting.** `public/og.jpg` is a 1200×630 screenshot of the home hero, used as the link preview. `wrangler.jsonc` serves `dist/` on Cloudflare Workers, with `404.html` for unknown paths.
+
 Design pass follows the unslop skill by Damir Sokolovsky (@heydamir), CC BY 4.0.

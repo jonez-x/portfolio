@@ -1,6 +1,7 @@
 // The flow under the hero: a pinned screen where scrolling only draws the line,
 // while About, Work and Contact fade in and out in place, one after the other.
 // CSS reads --v (0–1, how visible an act is); narrow screens and reduced motion get plain stacked sections.
+import { lenis, ease } from './smooth';
 
 const flow = document.querySelector<HTMLElement>('[data-flow]');
 
@@ -113,12 +114,16 @@ if (flow) {
     const [a, b] = [all[next - 1], all[next]];
     const target = direction >= 0 ? (y - a > NUDGE ? b : a) : b - y > NUDGE ? a : b;
     gliding = true;
-    scrollTo({ top: target, behavior: 'smooth' });
     const done = () => {
       gliding = false;
       removeEventListener('scrollend', done);
     };
-    addEventListener('scrollend', done);
+    if (lenis) {
+      lenis.scrollTo(target, { duration: 0.9, easing: ease, onComplete: done });
+    } else {
+      scrollTo({ top: target, behavior: 'smooth' });
+      addEventListener('scrollend', done);
+    }
     setTimeout(done, 1200);
   }
 

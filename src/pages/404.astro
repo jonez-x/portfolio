@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Not found — Jonas Taigel" description="This page doesn't exist.">
+  <section class="hero lost" aria-labelledby="lost-title">
+    <div class="stage-grain" aria-hidden="true"></div>
+    <svg class="stage-lines" viewBox="0 0 1200 800" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M-20 210 L330 -20 M-20 260 L410 -20" class="ln-cool" />
+      <path d="M980 -20 L1220 250 M1040 -20 L1220 180" class="ln-hot" />
+    </svg>
+
+    <div class="lost-inner">
+      <span class="case-glow" aria-hidden="true"></span>
+      <svg class="lost-thread" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <path pathLength="1" d="M-40 140C160 60 300 260 460 200S700 40 780 150C840 230 760 300 720 250" />
+        <circle cx="720" cy="250" r="6" />
+      </svg>
+      <h1 id="lost-title" class="big lost-title">404</h1>
+      <p class="lost-line">The line ends here. This page doesn't exist.</p>
+      <nav class="stage-bar" aria-label="Way back">
+        <a href="/"><span>[</span>← Home<span>]</span></a>
+        <a href="/#work"><span>[</span>Work<span>]</span></a>
+      </nav>
+    </div>
+  </section>
+</Base>
