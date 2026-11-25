@@ -359,6 +359,10 @@ html:has(.hero) .top:not(.is-past) nav a:hover { color: #ff7a2f; }
   transition: transform 600ms var(--ease);
 }
 .fan:hover li, .fan:focus-within li { transform: var(--open); }
+/* hover zones that don't move: a small one opens the fan, a wide one around the spread keeps it open,
+   and each card lifts inside its own still slot, so nothing slides out from under the pointer and flickers */
+.fan::before { content: ''; position: absolute; inset: -24px; }
+.fan:hover::before { inset: -80px -360px -32px; }
 .act.is-on .fan li { animation: peek 1400ms var(--ease) 400ms; }
 @keyframes peek { 40%, 60% { transform: var(--open); } }
 .fan-card {
@@ -373,7 +377,7 @@ html:has(.hero) .top:not(.is-past) nav a:hover { color: #ff7a2f; }
   content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: 0.22; mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
-.fan-card:hover, .fan-card:focus-visible { transform: translateY(-16px); }
+.fan li:hover .fan-card, .fan-card:focus-visible { transform: translateY(-16px); }
 .fan-ink { background: #0b0a09; color: #f5f1ec; }
 .fan-stone { background: linear-gradient(160deg, #a8a19b, #57524e); color: #fbf6f1; }
 .fan-hot { background: linear-gradient(160deg, #ff5f1f, #ffa463); color: #1c1410; }
@@ -382,7 +386,7 @@ html:has(.hero) .top:not(.is-past) nav a:hover { color: #ff7a2f; }
 .fan-hot:hover { color: #1c1410; }
 .fan-icon { width: 32px; height: 32px; fill: currentColor; }
 .fan-go { font-size: 24px; line-height: 32px; transition: transform 300ms var(--ease); }
-.fan-card:hover .fan-go { transform: translate(3px, -3px); }
+.fan li:hover .fan-go { transform: translate(3px, -3px); }
 .fan-mark { position: absolute; z-index: -1; right: -48px; bottom: 34px; width: 210px; height: 210px; fill: currentColor; opacity: 0.1; transform: rotate(-12deg); }
 .fan-kind { grid-column: 1 / -1; grid-row: 3; font: 700 52px/0.9 var(--sans); font-stretch: 75%; letter-spacing: -0.01em; text-transform: uppercase; }
 .fan-handle { grid-column: 1 / -1; grid-row: 4; font: 13px/20px var(--mono); opacity: 0.8; }
@@ -390,6 +394,7 @@ html:has(.hero) .top:not(.is-past) nav a:hover { color: #ff7a2f; }
 @media (hover: none), (max-width: 700px) {
   .fan { width: auto; height: auto; margin: 32px 0 0; display: grid; gap: 12px; }
   .fan li, .fan:hover li, .fan:focus-within li, .act.is-on .fan li { position: static; transform: none; animation: none; }
+  .fan::before { display: none; }
   .fan-card { height: auto; grid-template-rows: auto auto auto; }
   .fan-kind { grid-row: 2; margin-top: 16px; font-size: 36px; }
   .fan-handle { grid-row: 3; }
