@@ -1,0 +1,9 @@
+// Cloudflare Workers static site: serves the Astro build from dist/, unknown paths get dist/404.html.
+{
+  "name": "portfolio",
+  "compatibility_date": "2025-11-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page"
+  }
+}
